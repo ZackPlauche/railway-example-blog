@@ -1,0 +1,33 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+.env.staging
+.env.development.local
+.env.production.local
+.env.test.local
+.env.staging.local
+
+# Django
+*.log
+*.log.*
+*.log.*.*
+*.log.*.*.*
+*.log.*.*.*.*
+*.log.*.*.*.*.*
+
+*.sqlite3
+*.db
+

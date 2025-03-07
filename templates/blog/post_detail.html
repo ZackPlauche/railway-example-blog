@@ -1,0 +1,91 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <header class="mb-8">
+        <div class="flex items-center text-sm text-gray-500 mb-4">
+            <span class="flex items-center">
+                <iconify-icon icon="mdi:calendar" class="mr-1"></iconify-icon>
+                {{ post.created_at|date:"F j, Y" }}
+            </span>
+            <span class="mx-2">•</span>
+            <span class="flex items-center">
+                <iconify-icon icon="mdi:eye" class="mr-1"></iconify-icon>
+                {{ post.views_count }} views
+            </span>
+            <span class="mx-2">•</span>
+            <span class="flex items-center">
+                <iconify-icon icon="mdi:account" class="mr-1"></iconify-icon>
+                {{ post.author.get_full_name|default:post.author.username }}
+            </span>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">{{ post.title }}</h1>
+        <div class="flex items-center space-x-4">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800">
+                {{ post.category.name }}
+            </span>
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'blog:post_like' post.slug %}" class="inline-flex items-center">
+                {% csrf_token %}
+                <button type="submit" class="inline-flex items-center text-gray-500 hover:text-indigo-600">
+                    <iconify-icon icon="{% if user in post.likes.all %}mdi:heart{% else %}mdi:heart-outline{% endif %}" class="mr-1"></iconify-icon>
+                    <span>{{ post.likes.count }}</span>
+                </button>
+            </form>
+            {% else %}
+            <a href="{% url 'admin:login' %}" class="inline-flex items-center text-gray-500 hover:text-indigo-600">
+                <iconify-icon icon="mdi:heart-outline" class="mr-1"></iconify-icon>
+                <span>{{ post.likes.count }}</span>
+            </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <!-- Featured Image -->
+    {% if post.featured_image %}
+    <div class="mb-8">
+        <img src="{{ post.featured_image.url }}" alt="{{ post.title }}" class="w-full h-96 object-cover rounded-lg shadow-lg">
+    </div>
+    {% endif %}
+
+    <!-- Content -->
+    <div class="prose prose-lg max-w-none">
+        {{ post.content|linebreaks }}
+    </div>
+
+    <!-- Related Posts -->
+    {% if post.category.post_set.count > 1 %}
+    <div class="mt-12 pt-8 border-t border-gray-200">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6">Related Posts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for related_post in post.category.post_set.all %}
+                {% if related_post != post and related_post.status == 'published' %}
+                <article class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow duration-200">
+                    {% if related_post.featured_image %}
+                    <img src="{{ related_post.featured_image.url }}" alt="{{ related_post.title }}" class="w-full h-48 object-cover">
+                    {% endif %}
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">
+                            <a href="{% url 'blog:post_detail' related_post.slug %}" class="hover:text-indigo-600">
+                                {{ related_post.title }}
+                            </a>
+                        </h3>
+                        <p class="text-gray-600 mb-4 line-clamp-2">{{ related_post.content|truncatewords:20 }}</p>
+                        <div class="flex items-center text-sm text-gray-500">
+                            <span class="flex items-center">
+                                <iconify-icon icon="mdi:calendar" class="mr-1"></iconify-icon>
+                                {{ related_post.created_at|date:"F j, Y" }}
+                            </span>
+                        </div>
+                    </div>
+                </article>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</article>
+{% endblock %} 

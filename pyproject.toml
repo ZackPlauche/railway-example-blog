@@ -1,0 +1,17 @@
+[project]
+name = "simple-django-blog"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "dj-database-url>=2.3.0",
+    "django>=5.1.7",
+    "django-extensions>=3.2.3",
+    "gunicorn>=23.0.0",
+    "pillow>=11.1.0",
+    "psycopg2-binary>=2.9.10",
+    "python-decouple>=3.8",
+    "python-dotenv>=1.0.1",
+    "whitenoise>=6.9.0",
+]
